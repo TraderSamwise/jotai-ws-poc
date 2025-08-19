@@ -1,34 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Provider } from 'jotai'
+import { useState, useEffect } from 'react'
+import OrderBook from './components/OrderBook'
+import StatsMonitor from './components/StatsMonitor'
+import EnhancedStatsMonitor from './components/EnhancedStatsMonitor'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [showStats, setShowStats] = useState(false)
+  const [showEnhancedStats, setShowEnhancedStats] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Provider>
+      <div className={`app-container ${mounted ? 'mounted' : ''}`}>
+        {/* Animated background */}
+        <div className="background-animation">
+          <div className="gradient-orb orb-1"></div>
+          <div className="gradient-orb orb-2"></div>
+          <div className="gradient-orb orb-3"></div>
+        </div>
+        
+        {/* Grid pattern overlay */}
+        <div className="grid-overlay"></div>
+        
+        <StatsMonitor enabled={showStats} />
+        <EnhancedStatsMonitor enabled={showEnhancedStats} showOverlay={showEnhancedStats} />
+        <OrderBook />
+        
+        {/* Enhanced stats toggles */}
+        <div className="stats-controls">
+          <button
+            onClick={() => setShowStats(!showStats)}
+            className={`stats-toggle basic ${showStats ? 'active' : ''}`}
+          >
+            <span className="stats-icon">📊</span>
+            <span className="stats-text">{showStats ? 'Hide' : 'Basic'}</span>
+          </button>
+          <button
+            onClick={() => setShowEnhancedStats(!showEnhancedStats)}
+            className={`stats-toggle enhanced ${showEnhancedStats ? 'active' : ''}`}
+          >
+            <span className="stats-icon">🔥</span>
+            <span className="stats-text">{showEnhancedStats ? 'Hide' : 'Enhanced'}</span>
+          </button>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </Provider>
   )
 }
 
